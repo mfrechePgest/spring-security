@@ -29,6 +29,7 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import net.minidev.json.JSONObject;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -151,7 +152,7 @@ public final class ClientRegistrations {
 				.build(Collections.emptyMap());
 		// @formatter:on
 		return () -> {
-			RequestEntity<Void> request = RequestEntity.get(uri).build();
+			RequestEntity<Void> request = RequestEntity.get(uri).accept(MediaType.APPLICATION_JSON).build();
 			Map<String, Object> configuration = rest.exchange(request, typeReference).getBody();
 			OIDCProviderMetadata metadata = parse(configuration, OIDCProviderMetadata::parse);
 			ClientRegistration.Builder builder = withProviderConfiguration(metadata, issuer.toASCIIString())
@@ -183,7 +184,7 @@ public final class ClientRegistrations {
 
 	private static Supplier<ClientRegistration.Builder> getRfc8414Builder(URI issuer, URI uri) {
 		return () -> {
-			RequestEntity<Void> request = RequestEntity.get(uri).build();
+			RequestEntity<Void> request = RequestEntity.get(uri).accept(MediaType.APPLICATION_JSON).build();
 			Map<String, Object> configuration = rest.exchange(request, typeReference).getBody();
 			AuthorizationServerMetadata metadata = parse(configuration, AuthorizationServerMetadata::parse);
 			ClientRegistration.Builder builder = withProviderConfiguration(metadata, issuer.toASCIIString());
